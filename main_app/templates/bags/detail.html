@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
+    <h1>Bag Details </h1> 
   <div class="card">
         <div class="card-content">
             <div class="flex-container">
@@ -12,8 +12,12 @@
                     <p> {{ bag.material }} </p>
                 </div>
                 <div class="right">
-                    <img src="{{ bag.image }}" height="100px" width="100px">
-                    <p> £{{ bag.cost }} </p>
+                    <img src="{{ bag.image }}" height="300px" width="200px">
+                    <p> Retail Price: £{{ bag.cost }} </p>
+                    <div class="card-action"> 
+                        <a href="{% url 'bags_update' bag.id %}"> Edit </a>
+                        <a href="{% url 'bags_delete' bag.id %}"> Delete </a>
+                    </div>
                 </div>
 
 
@@ -21,4 +25,39 @@
         </div>
     </div>
 
+    <form action="{% url 'add_rentals' bag.id %}" method="post">
+        {% csrf_token %}
+        {{ rentals_form.as_p }}
+        <input type="submit" value="Add New Rental" class="btn">
+    </form>
+
+    <table class="highlight">
+        <thead>
+            <tr>
+                <th> Date Rented </th>
+                <th> Duration </th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for rentals in bag.rentals_set.all  %}
+            <tr>
+                <td> {{ rentals.date }} </td>
+                <td> {{ rentals.get_duration_display }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        var dateEl = document.getElementById('id_date');
+        M.Datepicker.init(dateEl, {
+            format: 'yyyy-mm-dd',
+            defaultDate: new Date(),
+            setDefaultDate: true,
+            autoClose: true
+        });
+
+        var selectEl = document.getElementById('id_duration');
+        M.FormSelect.init(selectEl);
+    </script>
 {% endblock %}
