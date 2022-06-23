@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Bag
+from .models import Bag, Renter
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 from .forms import RentalsForm
 
 
@@ -54,8 +55,9 @@ def bags_index(request):
 
 def bag_detail(request, bag_id):
     bag = Bag.objects.get(id=bag_id)
+    renters_bag_doesnt_have = Renter.objects.exclude(id__in = bag.renters.all().values_list('id'))
     rentals_form = RentalsForm()
-    return render(request, 'bags/detail.html', {'bag': bag, 'rentals_form':rentals_form})
+    return render(request, 'bags/detail.html', {'bag': bag, 'rentals_form':rentals_form, 'renters' : renters_bag_doesnt_have})
 
 def add_rentals(request, bag_id):
     form = RentalsForm(request.POST)
@@ -64,3 +66,30 @@ def add_rentals(request, bag_id):
         new_rental.bag_id = bag_id
         new_rental.save()
         return redirect('detail', bag_id=bag_id)
+
+
+class RenterList(ListView):
+    model = Renter
+
+class RenterDetail(DetailView):
+    model = Renter
+
+class RenterCreate(CreateView):
+    model = Renter
+    fields = '__all__'
+
+class RenterUpdate(UpdateView):
+    model = Renter
+    fields = '__all__'
+
+class RenterDelete(DeleteView):
+    model = Renter
+    success_url = '/renters/'
+
+def assoc_renter(request, bag_id, renter_id):
+    Bag.objects.get(id=bag_id).renters.add(renter_id)
+    return redirect('detail', bag_id=bag_id)
+
+def disassoc_renter(request, bag_id, renter_id):
+    Bag.objects.get(id=bag_id).renters.remove(renter_id)
+    return redirect('detail', bag_id=bag_id)

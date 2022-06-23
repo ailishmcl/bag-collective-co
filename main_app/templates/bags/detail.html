@@ -31,6 +31,16 @@
         <input type="submit" value="Add New Rental" class="btn">
     </form>
 
+    {% if bag.rented_today %}
+        <div class="card-panel pink-text center-align">
+            The lovely {{ bag.name }} is available to rent!!
+        </div>
+    {% else %}
+        <div class="card-panel purple-text center-align">
+            All of our lovely {{ bag.name }}'s are currently rented out, try again later!!
+        </div>
+    {% endif %}
+
     <table class="highlight">
         <thead>
             <tr>
@@ -48,6 +58,56 @@
         </tbody>
     </table>
 
+    <hr>
+    <a name="renters">
+    <div class="row">
+        <div class="col s6">
+            <h3> Current Renters </h3> 
+            {% if bag.renters.count %}
+                {% for renter in bag.renters.all %}
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <span class="purple-text"> {{ renter.name }} </span> from {{ renter.location }}
+                            </span>
+                        </div>
+                        <div class="card-action">
+                            <form action="{% url 'disassoc_renter' bag.id renter.id %}#renters" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn"> Remove </button> 
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h5> {{ bag.name }} has no active renters </h5>
+            {% endif %}
+        </div>
+        <!-- available toys -->
+        <div class="col s6">
+            <h3> Available Renters </h3> 
+            {% if renters.count %}
+                {% for renter in renters.all %}
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <span class="purple-text"> {{ renter.name }} </span> from {{ renter.location }}
+                            </span>
+                        </div>
+                        <div class="card-action">
+                            <form action="{% url 'assoc_renter' bag.id renter.id %}#renters" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn"> Add </button> 
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h5> {{ bag.name }} has all available renters </h5>
+            {% endif %}
+        </div>
+    </div>
+    </a>
     <script>
         var dateEl = document.getElementById('id_date');
         M.Datepicker.init(dateEl, {
