@@ -20,12 +20,21 @@
                 <ul>
                     <li> <a href="{% url 'home' %}" class="left brand-logo"> &nbsp; BagCollective </a></li>
                 </ul>
+                
                 <ul class="right">
                     <li> <a href="{% url 'about' %}"> About </a></li>
+                    {% if user.is_authenticated %}
                     <li> <a href="{% url 'bags_create' %}"> Add Bag </a></li>
                     <li> <a href="{% url 'renters_create' %}"> Add Renter </a></li>
                     <li> <a href="{% url 'index' %}"> View Bags </a></li>
                     <li> <a href="{% url 'renters_index' %}"> View Renters </a></li>
+                    <li> <a href="{% url 'logout' %}"> Log Out </a></li> 
+                    <p class="purple-text" id="welcome_message"> Welcome, {{ user.username }} </p>
+                    {% else %}
+                    <li> <a href="{% url 'login' %}"> Log In </a></li> 
+                    <li> <a href="{% url 'signup' %}"> Sign Up </a></li> 
+
+                    {% endif %}
                 </ul>
             </div>
         </nav>

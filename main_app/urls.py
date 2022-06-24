@@ -19,4 +19,6 @@ urlpatterns = [
     # associating and un-associating bag and renter
     path('bags/<int:bag_id>/assoc_renter/<int:renter_id>/', views.assoc_renter, name='assoc_renter'),
     path('bags/<int:bag_id>/disassoc_renter/<int:renter_id>/', views.disassoc_renter, name='disassoc_renter'),
+    # signup url
+    path('accounts/signup/', views.signup, name='signup'),
 ]

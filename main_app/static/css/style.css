@@ -18,3 +18,7 @@ footer.page-footer {
     display: flex;
     justify-content: space-between;
 }
+
+#welcome_message {
+    text-align: right;
+}
